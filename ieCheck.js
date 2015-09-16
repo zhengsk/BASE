@@ -1,3 +1,4 @@
+//  参考： http://nmsdvid.com/iealert/
 ie = (function(){
 	 
     var undef,
