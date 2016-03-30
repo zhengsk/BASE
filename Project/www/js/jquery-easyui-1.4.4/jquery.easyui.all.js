@@ -8548,21 +8548,57 @@
 		} else {
 			$('<input type="'+opts.type+'" class="textbox-text" autocomplete="off">').prependTo(tb);
 		}
-		
+
 		tb.find('.textbox-addon').remove();
-		var bb = opts.icons ? $.extend(true, [], opts.icons) : [];
+		var bb = opts.icons = opts.icons ? $.extend(true, [], opts.icons) : [];
 		if (opts.iconCls){
 			bb.push({
 				iconCls: opts.iconCls,
 				disabled: true
 			});
 		}
+
+		if (opts.iconClear){	//TODO author zsk iconClear
+			bb.unshift({
+				iconCls: 'icon-clear',
+				disabled: false,
+				handler: function(e){
+					$(target).textbox('clear');
+					$(this).css('visibility','hidden');
+				}
+			});
+		}
+
 		if (bb.length){
 			var bc = $('<span class="textbox-addon"></span>').prependTo(tb);
 			bc.addClass('textbox-addon-'+opts.iconAlign);
 			for(var i=0; i<bb.length; i++){
 				bc.append('<a href="javascript:void(0)" class="textbox-icon '+bb[i].iconCls+'" icon-index="'+i+'" tabindex="-1"></a>');
 			}
+		}
+
+		if (opts.iconClear){	//TODO author zsk iconClear
+
+		    $(target).textbox('getIcon',0).css('visibility','hidden');
+
+		    var icon = $(target).textbox('getIcon',0);
+		    
+		    var inputEle = $(target).textbox('textbox');
+		    tb.on({
+		        mouseover:function(){
+		            if (inputEle.val()){
+		                icon.css('visibility','visible');
+		            }
+		        },
+		        mouseout : function(){
+		            icon.css('visibility','hidden');
+		        },
+		        input : function() {
+		        	if (inputEle.val()){
+		                icon.css('visibility','visible');
+		            }
+		        }
+		    });
 		}
 		
 		tb.find('.textbox-button').remove();
@@ -8984,7 +9020,7 @@
 		var t = $(target);
 		return $.extend({}, $.fn.validatebox.parseOptions(target), 
 			$.parser.parseOptions(target, [
-			     'prompt','iconCls','iconAlign','buttonText','buttonIcon','buttonAlign',
+			     'prompt','iconCls','iconAlign','buttonText','buttonIcon','buttonAlign','iconClear',
 			     {multiline:'boolean',editable:'boolean',iconWidth:'number'}
 		    ]), {
 			value: (t.val() || undefined),
@@ -9008,6 +9044,7 @@
 		iconCls:null,
 		iconAlign:'right',	// 'left' or 'right'
 		iconWidth:18,
+		iconClear: false,	// zsk 2016-03-29
 		buttonText:'',
 		buttonIcon:null,
 		buttonAlign:'right',
@@ -10329,15 +10366,17 @@
 				doSpin(e);
 			}
 		});
-		$(target).addClass('spinner-f').textbox($.extend({}, opts, {
+		var $target = $(target);
+		$target.addClass('spinner-f').textbox($.extend({}, opts, {
 			icons: icons
 		}));
-		var arrowIcon = $(target).textbox('getIcon', icons.length-1);
+
+		var arrowIcon = $target.textbox('getIcon', $target.textbox('options').icons.length-1 );
 		arrowIcon.append('<a href="javascript:void(0)" class="spinner-arrow-up" tabindex="-1"></a>');
 		arrowIcon.append('<a href="javascript:void(0)" class="spinner-arrow-down" tabindex="-1"></a>');
 		
-		$(target).attr('spinnerName', $(target).attr('textboxName'));
-		state.spinner = $(target).next();
+		$target.attr('spinnerName', $target.attr('textboxName'));
+		state.spinner = $target.next();
 		state.spinner.addClass('spinner');
 	}
 	
