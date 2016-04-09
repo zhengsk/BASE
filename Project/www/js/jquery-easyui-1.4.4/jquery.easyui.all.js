@@ -8558,7 +8558,7 @@
 			});
 		}
 
-		if (opts.iconClear){	//TODO author zsk iconClear
+		if (opts.iconClear){	//author zsk iconClear
 			bb.unshift({
 				iconCls: 'icon-clear',
 				disabled: false,
@@ -8577,7 +8577,7 @@
 			}
 		}
 
-		if (opts.iconClear){	//TODO author zsk iconClear
+		if (opts.iconClear){	//author zsk iconClear
 
 		    $(target).textbox('getIcon',0).css('visibility','hidden');
 
